@@ -1,9 +1,10 @@
-let currentLevel = 1;
-const startBtn = document.getElementById('startBtn');
 const grid = document.getElementById('grid');
 const message = document.getElementById('message');
-let gridSize = 5;
-let highlightedCells = [];
+const startBtn = document.getElementById('start');
+
+let gridSize;
+let currentLevel = 1;
+let highlightedCells;
 let userClicks = [];
 
 function createGrid(size) {
@@ -23,27 +24,28 @@ function createGrid(size) {
 }
 
 function onCellClick(e) {
-    const index = parseInt(e.target.dataset.index);
+    const cell = e.target;
+    const index = parseInt(cell.dataset.index);
 
-    if (highlightedCells.includes(index)) {
-        e.target.classList.add('highlighted');
-        userClicks.push(index);
+    if (userClicks.includes(index)) {
+        return;
+    }
 
-        if (userClicks.length === highlightedCells.length) {
-            if (arraysEqual(userClicks, highlightedCells)) {
-                message.textContent = 'Correct! Next level!';
-                currentLevel++;
-                setTimeout(startGame, 2000);
-            } else {
-                message.textContent = 'Incorrect! Try again!';
-                setTimeout(startGame, 2000);
-            }
+    userClicks.push(index);
+    cell.classList.add('selected');
+
+    if (userClicks.length === highlightedCells.length) {
+        if (checkUserInput()) {
+            currentLevel++;
+            message.textContent = 'Correct! Proceeding to the next level.';
+            setTimeout(startGame, 2000);
+        } else {
+            message.textContent = 'Incorrect! Try again.';
+            setTimeout(startGame, 2000);
         }
-    } else {
-        message.textContent = 'Incorrect! Try again!';
-        setTimeout(startGame, 2000);
     }
 }
+
 
 function startGame() {
     gridSize = 5;
@@ -84,8 +86,21 @@ function showPattern(pattern) {
     });
 }
 
-function arraysEqual(a, b) {
-    return a.length === b.length && a.every((val, index) => val === b[index]);
+function checkUserInput() {
+    const userClicksSet = new Set(userClicks);
+    const highlightedCellsSet = new Set(highlightedCells);
+
+    if (userClicksSet.size !== highlightedCellsSet.size) {
+        return false;
+    }
+
+    for (const cell of highlightedCellsSet) {
+        if (!userClicksSet.has(cell)) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 startBtn.addEventListener('click', startGame);
