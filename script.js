@@ -40,12 +40,13 @@ function onCellClick(e) {
             message.textContent = 'Correct! Proceeding to the next level.';
             setTimeout(startGame, 2000);
         } else {
-            message.textContent = 'Incorrect! Try again.';
-            setTimeout(startGame, 2000);
+            message.textContent = `Incorrect! Game Over. You passed ${currentLevel - 1} levels.`;
+            startBtn.textContent = 'Restart Game';
+            currentLevel = 1;
+            startBtn.disabled = false;
         }
     }
 }
-
 
 function startGame() {
     gridSize = 5;
