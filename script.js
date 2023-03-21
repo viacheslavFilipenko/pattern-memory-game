@@ -1,8 +1,8 @@
+let currentLevel = 1;
 const startBtn = document.getElementById('startBtn');
 const grid = document.getElementById('grid');
 const message = document.getElementById('message');
 let gridSize = 5;
-let currentLevel = 1;
 let highlightedCells = [];
 let userClicks = [];
 
@@ -48,17 +48,16 @@ function onCellClick(e) {
 function startGame() {
     gridSize = 5;
     createGrid(gridSize);
-    message.textContent = '';
+    message.textContent = `Level ${currentLevel}`;
     startBtn.disabled = true;
 
-    const patternSize = Math.floor(gridSize * gridSize / 2);
+    const patternSize = currentLevel;
     highlightedCells = generateRandomPattern(gridSize, patternSize);
     showPattern(highlightedCells).then(() => {
         startBtn.disabled = false;
         userClicks = [];
     });
 }
-
 
 function generateRandomPattern(gridSize, count) {
     const pattern = new Set();
@@ -74,16 +73,14 @@ function showPattern(pattern) {
     const delay = 1000;
 
     return new Promise((resolve) => {
-        pattern.forEach((index, i) => {
-            setTimeout(() => {
-                cells[index].classList.add('highlighted');
-            }, delay * i);
+        pattern.forEach((index) => {
+            cells[index].classList.add('highlighted');
         });
 
         setTimeout(() => {
             cells.forEach((cell) => cell.classList.remove('highlighted'));
             resolve();
-        }, delay * pattern.length);
+        }, delay);
     });
 }
 
